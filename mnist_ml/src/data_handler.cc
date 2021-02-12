@@ -15,7 +15,6 @@ void data_handler::read_feature_vector(std::string path)
 {
   uint32_t header[4];
   unsigned char bytes[4];
-  printf("size of bytes type %lu.\n",sizeof(unsigned char));
   FILE *f = fopen(path.c_str() , "r");
   if (f){
     for (int i = 0; i < 4; ++i){
@@ -25,11 +24,9 @@ void data_handler::read_feature_vector(std::string path)
     }
     printf("Done getting file headers.\n");
     int image_size = header[2] * header[3];
-    printf("image size %d.\n",image_size);
     for (int i = 0; i < header[1]; ++i){
       data *d = new data();
       uint8_t element[1];
-      printf("size of element type %lu.\n",sizeof(element));
       int read_out_value ;
       for ( int j = 0; j < image_size; ++j){
         if ( fread(element, sizeof(element), 1, f)){
@@ -53,11 +50,11 @@ void data_handler::read_feature_vector(std::string path)
 
 void data_handler::read_feature_labels(std::string path)
 {
-  uint32_t header[4];
+  uint32_t header[2];
   unsigned char bytes[4];
   FILE *f = fopen(path.c_str() , "r");
   if (f){
-    for (int i = 0; i < 4; ++i){
+    for (int i = 0; i < 2; ++i){
       if ( fread(bytes , sizeof(bytes), 1, f)){
         header[i] = convert_to_little_endian(bytes);
       }
@@ -68,6 +65,7 @@ void data_handler::read_feature_labels(std::string path)
       if (fread(element, sizeof(element), 1, f)){
         data_array->at(i)->set_label(element[0]);
       }else{
+        printf("Error Reading from feature File. i %d line\n",i);
         printf("Error Reading from File.\n");
         exit(1);
       }
@@ -92,6 +90,7 @@ void data_handler::split_data()
     int rand_index = rand() % data_array->size() ;
     if ( used_indexes.find(rand_index) == used_indexes.end()) {
       training_data->push_back(data_array->at(rand_index));
+      ++count;
     }
   }
 
@@ -101,15 +100,17 @@ void data_handler::split_data()
     int rand_index = rand() % data_array->size() ;
     if ( used_indexes.find(rand_index) == used_indexes.end()) {
       test_data->push_back(data_array->at(rand_index));
+      ++count;
     }
   }
 
   // Validation Data
   count = 0;
-  while ( count < valid_size){
+  while ( count < valid_size ){
     int rand_index = rand() % data_array->size() ;
     if ( used_indexes.find(rand_index) == used_indexes.end()) {
       validation_data->push_back(data_array->at(rand_index));
+      ++count;
     }
   }
 

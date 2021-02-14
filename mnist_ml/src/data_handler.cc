@@ -141,6 +141,10 @@ uint32_t data_handler::convert_to_little_endian( const unsigned char* bytes)
                     (bytes[3]));
 }
 
+int data_handler::get_class_counts()
+{
+  return num_classes;
+}
 std::vector<data *> * data_handler::get_training_data()
 {
   return training_data;
@@ -156,12 +160,12 @@ std::vector<data *> * data_handler::get_validation_data()
   return validation_data;
 }
 
-int main()
-{
-  data_handler *dh = new data_handler();
-  dh->read_feature_vector("./train-images-idx3-ubyte/train-images.idx3-ubyte");//
-  dh->read_feature_labels("./train-labels-idx1-ubyte/train-labels.idx1-ubyte");
-  dh->split_data();
-  dh->count_classes();
-  return 0;
-}
+// int main()
+// {
+//   data_handler *dh = new data_handler();
+//   dh->read_feature_vector("./train-images-idx3-ubyte/train-images.idx3-ubyte");//
+//   dh->read_feature_labels("./train-labels-idx1-ubyte/train-labels.idx1-ubyte");
+//   dh->split_data();
+//   dh->count_classes();
+//   return 0;
+// }
